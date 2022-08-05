@@ -6,7 +6,7 @@ services:
     volumes:
       - ./configuration/chirpstack-network-server:/etc/chirpstack-network-server
     depends_on:
-      - chirpstack-postgresql
+      - postgresql
       - mosquitto
 
   chirpstack-application-server:
@@ -27,7 +27,7 @@ services:
     depends_on: 
       - mosquitto
 
-  chirpstack-postgresql:
+  postgresql:
     image: postgres:9.6-alpine
     environment:
       - POSTGRES_PASSWORD=root
