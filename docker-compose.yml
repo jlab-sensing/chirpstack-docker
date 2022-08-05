@@ -8,6 +8,8 @@ services:
     depends_on:
       - postgresql
       - mosquitto
+    networks:
+      default:
 
   chirpstack-application-server:
     image: chirpstack/chirpstack-application-server:3
@@ -17,6 +19,9 @@ services:
       - ./configuration/chirpstack-application-server:/etc/chirpstack-application-server
     depends_on:
       - chirpstack-network-server
+    networks:
+      default:
+      chirpstack-external:
 
   chirpstack-gateway-bridge:
     image: chirpstack/chirpstack-gateway-bridge:3
@@ -26,6 +31,8 @@ services:
       - ./configuration/chirpstack-gateway-bridge:/etc/chirpstack-gateway-bridge
     depends_on: 
       - mosquitto
+    networks:
+      default:
 
   postgresql:
     image: postgres:9.6-alpine
@@ -34,11 +41,15 @@ services:
     volumes:
       - ./configuration/postgresql/initdb:/docker-entrypoint-initdb.d
       - postgresqldata:/var/lib/postgresql/data
+    networks:
+      default:
 
   redis:
     image: redis:5-alpine
     volumes:
       - redisdata:/data
+    networks:
+      default:
 
   mosquitto:
     image: eclipse-mosquitto:2
@@ -46,6 +57,13 @@ services:
       - 1883:1883
     volumes: 
       - ./configuration/eclipse-mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      default:
+
+networks:
+  default:
+  chirpstack-external:
+    name: "chirpstack-external"
 
 volumes:
   postgresqldata:
